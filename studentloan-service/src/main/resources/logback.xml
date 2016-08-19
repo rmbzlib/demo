@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Example LOGBACK Configuration File
+  http://logback.qos.ch/manual/configuration.html
+  -->
+<configuration>
+
+  <property name="filePrefix" value="${tomcatlogdir}"></property>
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+	  <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger:%line - %msg%n</pattern>
+      <charset>UTF-8</charset>
+    </encoder>
+  </appender>
+
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${filePrefix}/logs/studentloan.log</file>
+
+    <append>true</append>
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>INFO</level>
+    </filter>
+
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <!-- daily rollover -->
+      <fileNamePattern>${filePrefix}/logs/studentloan_%d{yyyy-MM-dd}.log</fileNamePattern>
+
+      <!-- keep 90 days' worth of history -->
+      <maxHistory>90</maxHistory>
+    </rollingPolicy>
+
+    <encoder>
+	  <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger:%line - %msg%n</pattern>
+	  <charset>UTF-8</charset>
+    </encoder>
+  </appender>
+
+  <root level="debug">
+    <appender-ref ref="STDOUT" />
+    <appender-ref ref="FILE" />
+  </root>
+</configuration>
