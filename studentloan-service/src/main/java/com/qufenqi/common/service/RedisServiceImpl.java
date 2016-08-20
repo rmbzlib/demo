@@ -1,8 +1,10 @@
 package com.qufenqi.common.service;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.connection.jedis.JedisConnection;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
@@ -21,11 +23,23 @@ public class RedisServiceImpl implements RedisService {
 
     private static Logger logger = LoggerFactory.getLogger(RedisServiceImpl.class);
 
-    //操作redis客户端
-    private static Jedis jedis;
+    private Jedis jedis;
+
+    private static JedisConnection jedisConnection;
 
     @Autowired
     private JedisConnectionFactory jedisConnectionFactory;
+
+    @Override
+    public boolean checkExistServer() {
+        String pv=null;
+        try{
+            pv=this.getJedis().ping();
+        }catch (Exception e){
+            logger.warn("-----------未检查到可用redis服务!------------");
+        }
+        return StringUtils.isNotBlank(pv);
+    }
 
     /**
      * 通过key删除（字节）
@@ -33,20 +47,13 @@ public class RedisServiceImpl implements RedisService {
      * @param key
      */
     public void del(byte[] key) {
-        Jedis jedis = null;
+        jedis=this.getJedis();
         try {
-            jedis= jedisPool.getResource();
             jedis.del(key);
         }catch (Exception e){
             logger.error("",e);
-            if(jedis!=null){
-                jedisPool.returnBrokenResource(jedis);
-                jedis = null;
-            }
         }finally {
-            if(jedis != null ) {
-                jedisPool.returnResource(jedis);
-            }
+            release(jedis);
         }
     }
 
@@ -56,20 +63,13 @@ public class RedisServiceImpl implements RedisService {
      * @param key
      */
     public void del(String key) {
-        Jedis jedis = null;
+        jedis=this.getJedis();
         try {
-            jedis= jedisPool.getResource();
             jedis.del(key);
         }catch (Exception e){
             logger.error("del key"+key,e);
-            if(jedis!=null){
-                jedisPool.returnBrokenResource(jedis);
-                jedis = null;
-            }
         }finally {
-            if(jedis != null ) {
-                jedisPool.returnResource(jedis);
-            }
+           release(jedis);
         }
     }
 
@@ -81,21 +81,14 @@ public class RedisServiceImpl implements RedisService {
      * @param liveTime
      */
     public void set(byte[] key, byte[] value, int liveTime) {
+        jedis=this.getJedis();
         this.set(key, value);
-        Jedis jedis = null;
         try {
-            jedis= jedisPool.getResource();
             jedis.expire(key, liveTime);
         }catch (Exception e){
             logger.error("",e);
-            if(jedis!=null){
-                jedisPool.returnBrokenResource(jedis);
-                jedis = null;
-            }
         }finally {
-            if(jedis != null ) {
-                jedisPool.returnResource(jedis);
-            }
+            release(jedis);
         }
     }
 
@@ -107,21 +100,14 @@ public class RedisServiceImpl implements RedisService {
      * @param liveTime
      */
     public void set(String key, String value, int liveTime) {
+        jedis=this.getJedis();
         this.set(key, value);
-        Jedis jedis = null;
         try {
-            jedis= jedisPool.getResource();
             jedis.expire(key, liveTime);
         }catch (Exception e){
             logger.error("", e);
-            if(jedis!=null){
-                jedisPool.returnBrokenResource(jedis);
-                jedis = null;
-            }
         }finally {
-            if(jedis != null ) {
-                jedisPool.returnResource(jedis);
-            }
+            release(jedis);
         }
     }
 
@@ -132,20 +118,13 @@ public class RedisServiceImpl implements RedisService {
      * @param value
      */
     public void set(String key, String value) {
-        Jedis jedis = null;
+        jedis=this.getJedis();
         try {
-            jedis= jedisPool.getResource();
             jedis.set(key, value);
         }catch (Exception e){
             logger.error("", e);
-            if(jedis!=null){
-                jedisPool.returnBrokenResource(jedis);
-                jedis = null;
-            }
         }finally {
-            if(jedis != null ) {
-                jedisPool.returnResource(jedis);
-            }
+            release(jedis);
         }
     }
 
@@ -156,20 +135,13 @@ public class RedisServiceImpl implements RedisService {
      * @param value
      */
     public void set(byte[] key, byte[] value) {
-        Jedis jedis = null;
+        jedis=this.getJedis();
         try {
-            jedis= jedisPool.getResource();
             jedis.set(key, value);
         }catch (Exception e){
             logger.error("", e);
-            if(jedis!=null){
-                jedisPool.returnBrokenResource(jedis);
-                jedis = null;
-            }
         }finally {
-            if(jedis != null ) {
-                jedisPool.returnResource(jedis);
-            }
+            release(jedis);
         }
     }
 
@@ -180,21 +152,14 @@ public class RedisServiceImpl implements RedisService {
      * @return
      */
     public String get(String key) {
-        Jedis jedis = null;
+        jedis=this.getJedis();
         String a = "";
         try {
-            jedis= jedisPool.getResource();
             a = jedis.get(key);
         }catch (Exception e){
             logger.error("", e);
-            if(jedis!=null){
-                jedisPool.returnBrokenResource(jedis);
-                jedis = null;
-            }
         }finally {
-            if(jedis != null ) {
-                jedisPool.returnResource(jedis);
-            }
+            release(jedis);
         }
         return a;
     }
@@ -206,21 +171,14 @@ public class RedisServiceImpl implements RedisService {
      * @return
      */
     public byte[] get(byte[] key) {
-        Jedis jedis = null;
+        jedis=this.getJedis();
         byte[]  a = null;
         try {
-            jedis= jedisPool.getResource();
             a = jedis.get(key);
         }catch (Exception e){
             logger.error("", e);
-            if(jedis!=null){
-                jedisPool.returnBrokenResource(jedis);
-                jedis = null;
-            }
         }finally {
-            if(jedis != null ) {
-                jedisPool.returnResource(jedis);
-            }
+            release(jedis);
         }
         return a;
     }
@@ -232,21 +190,14 @@ public class RedisServiceImpl implements RedisService {
      * @return
      */
     public Set<String> keys(String pattern) {
-        Jedis jedis = null;
+        jedis=this.getJedis();
         Set<String> a = null;
         try {
-            jedis= jedisPool.getResource();
             a = jedis.keys(pattern);
         }catch (Exception e){
             logger.error("", e);
-            if(jedis!=null){
-                jedisPool.returnBrokenResource(jedis);
-                jedis = null;
-            }
         }finally {
-            if(jedis != null ) {
-                jedisPool.returnResource(jedis);
-            }
+            release(jedis);
         }
         return a;
     }
@@ -258,21 +209,14 @@ public class RedisServiceImpl implements RedisService {
      * @return
      */
     public boolean exists(String key) {
-        Jedis jedis = null;
+        jedis=this.getJedis();
         boolean a = false;
         try {
-            jedis= jedisPool.getResource();
             a = jedis.exists(key);
         }catch (Exception e){
             logger.error("", e);
-            if(jedis!=null){
-                jedisPool.returnBrokenResource(jedis);
-                jedis = null;
-            }
         }finally {
-            if(jedis != null ) {
-                jedisPool.returnResource(jedis);
-            }
+            release(jedis);
         }
         return a;
     }
@@ -283,21 +227,14 @@ public class RedisServiceImpl implements RedisService {
      * @return
      */
     public String flushDB() {
-        Jedis jedis = null;
+        jedis=this.getJedis();
         String a = "";
         try {
-            jedis= jedisPool.getResource();
             a = jedis.flushDB();
         }catch (Exception e){
             logger.error("", e);
-            if(jedis!=null){
-                jedisPool.returnBrokenResource(jedis);
-                jedis = null;
-            }
         }finally {
-            if(jedis != null ) {
-                jedisPool.returnResource(jedis);
-            }
+            release(jedis);
         }
         return a;
     }
@@ -306,86 +243,19 @@ public class RedisServiceImpl implements RedisService {
      * 查看redis里有多少数据
      */
     public long dbSize() {
-
-//        return this.getJedis().dbSize();
-        Jedis jedis = null;
+        jedis=this.getJedis();
         long a = 0;
         try {
-            jedis= jedisPool.getResource();
             a = jedis.dbSize();
         }catch (Exception e){
             logger.error("", e);
-            if(jedis!=null){
-                jedisPool.returnBrokenResource(jedis);
-                jedis = null;
-            }
         }finally {
-            if(jedis != null ) {
-                jedisPool.returnResource(jedis);
-            }
+            release(jedis);
         }
         return a;
     }
 
-    /**
-     * 检查是否连接成功
-     *
-     * @return
-     */
-    public String ping() {
-        Jedis jedis = null;
-        String a = "";
-        try {
-            jedis= jedisPool.getResource();
-            a = jedis.ping();
-        }catch (Exception e){
-            logger.error("", e);
-            if(jedis!=null){
-                jedisPool.returnBrokenResource(jedis);
-                jedis = null;
-            }
-        }finally {
-            if(jedis != null ) {
-                jedisPool.returnResource(jedis);
-            }
-        }
-        return a;
-    }
 
-    /**
-     * 获取一个jedis 客户端
-     *
-     * @return
-     */
-    private Jedis getJedis() {
-        if (jedis == null) {
-//            jedis = jedisConnectionFactory.getShardInfo().createResource();
-//            return jedis;
-            return jedisConnectionFactory.getShardInfo().createResource();
-        }
-        return jedis;
-    }
-    /**
-     * 获取一个jedis 客户端
-     *
-     * @return
-     */
-    @Autowired
-    protected JedisPool jedisPool;
-
-    /**
-     * 释放jedis资源
-     * @param jedis
-     */
-    public void release(Jedis jedis, boolean isBroken) {
-        if (jedis != null) {
-            if (isBroken) {
-                jedisPool.returnBrokenResource(jedis);
-            } else {
-                jedisPool.returnResource(jedis);
-            }
-        }
-    }
     /**
      * 添加key value (字节)(序列化)
      *
@@ -393,103 +263,52 @@ public class RedisServiceImpl implements RedisService {
      * @param value
      */
     public void setList(String key, String... value){
-        Jedis jedis = null;
+        jedis=this.getJedis();
         try {
-            jedis= jedisPool.getResource();
             jedis.rpush(key, value);
         }catch (Exception e){
             logger.error("", e);
-            if(jedis!=null){
-                jedisPool.returnBrokenResource(jedis);
-                jedis = null;
-            }
         }finally {
-            if(jedis != null ) {
-                jedisPool.returnResource(jedis);
-            }
+            release(jedis);
         }
-    }
-    /**
-     * 减用户的摇奖次数
-     *
-     * @param key
-     */
-    public long decr(String key){
-        Jedis jedis = null;
-        long re = 0;
-        try {
-            jedis= jedisPool.getResource();
-            re = jedis.decr(key);
-        }catch (Exception e){
-            logger.error("", e);
-            if(jedis!=null){
-                jedisPool.returnBrokenResource(jedis);
-                jedis = null;
-            }
-        }finally {
-            if(jedis != null ) {
-                jedisPool.returnResource(jedis);
-            }
-        }
-        return re;
     }
 
     @Override
     public void zadd(String key, double score, String member) {
-        Jedis jedis = null;
+        jedis=this.getJedis();
         try {
-            jedis= jedisPool.getResource();
             jedis.zadd(key, score, member);
         }catch (Exception e){
             logger.error("", e);
-            if(jedis!=null){
-                jedisPool.returnBrokenResource(jedis);
-                jedis = null;
-            }
         }finally {
-            if(jedis != null ) {
-                jedisPool.returnResource(jedis);
-            }
+            release(jedis);
         }
     }
 
     @Override
     public void zrem(String key, String member) {
-        Jedis jedis = null;
+        jedis=this.getJedis();
         try {
-            jedis= jedisPool.getResource();
             jedis.zrem(key,member);
         }catch (Exception e){
             logger.error("", e);
-            if(jedis!=null){
-                jedisPool.returnBrokenResource(jedis);
-                jedis = null;
-            }
         }finally {
-            if(jedis != null ) {
-                jedisPool.returnResource(jedis);
-            }
+            release(jedis);
         }
     }
 
     @Override
     public Set zrange(String key, long start, long end) {
-        Jedis jedis = null;
+        jedis=this.getJedis();
+
         try {
-            jedis= jedisPool.getResource();
             return jedis.zrange(key,start,end);
         }catch (Exception e){
             logger.error("", e);
-            if(jedis!=null){
-                jedisPool.returnBrokenResource(jedis);
-                jedis = null;
-            }
         }finally {
-            if(jedis != null ) {
-                jedisPool.returnResource(jedis);
-            }
+            release(jedis);
         }
-        return new HashSet();
+        return null;
     }
 
     /**
@@ -498,24 +317,16 @@ public class RedisServiceImpl implements RedisService {
      * @param key
      */
     public String delList(String key) {
-        Jedis jedis = null;
-        String redis = "";
+        jedis=this.getJedis();
+
         try {
-            jedis= jedisPool.getResource();
-//            System.out.print("!!!!!!!!!!!!!!!!!!"+key);
-            redis = jedis.lpop(key);
+            return jedis.lpop(key);
         }catch (Exception e){
             logger.error("", e);
-            if(jedis!=null){
-                jedisPool.returnBrokenResource(jedis);
-                jedis = null;
-            }
         }finally {
-            if(jedis != null ) {
-                jedisPool.returnResource(jedis);
-            }
+            release(jedis);
         }
-        return redis;
+        return null;
     }
 
     /**
@@ -524,23 +335,16 @@ public class RedisServiceImpl implements RedisService {
      * @param key
      */
     public String setListSub(String key, String value) {
-        Jedis jedis = null;
-        String redis = "";
+        jedis=this.getJedis();
+
         try {
-            jedis= jedisPool.getResource();
-            redis = jedis.lset(key, Long.valueOf(value), "0.00000");
+            return jedis.lset(key, Long.valueOf(value), "0.00000");
         }catch (Exception e){
             logger.error("", e);
-            if(jedis!=null){
-                jedisPool.returnBrokenResource(jedis);
-                jedis = null;
-            }
         }finally {
-            if(jedis != null ) {
-                jedisPool.returnResource(jedis);
-            }
+            release(jedis);
         }
-        return "";
+        return null;
     }
 
     /**
@@ -549,22 +353,15 @@ public class RedisServiceImpl implements RedisService {
      * @param key
      */
     public List<String> getList(String key){
-        Jedis jedis = null;
-        boolean isBroken = false;
+        jedis=this.getJedis();
+
         List<String> lists = null;
         try {
-            jedis= jedisPool.getResource();
             lists =  jedis.lrange(key, 0, -1);
         }catch (Exception e){
             logger.error("", e);
-            if(jedis!=null){
-                jedisPool.returnBrokenResource(jedis);
-                jedis = null;
-            }
         }finally {
-            if(jedis != null ) {
-                jedisPool.returnResource(jedis);
-            }
+            release(jedis);
         }
         return lists;
     }
@@ -575,22 +372,14 @@ public class RedisServiceImpl implements RedisService {
      * @param key
      */
     public List<String> getListByPage(String key, int start, int end){
-        Jedis jedis = null;
-        boolean isBroken = false;
+        jedis=this.getJedis();
         List<String> lists = null;
         try {
-            jedis= jedisPool.getResource();
             lists =  jedis.lrange(key,start,end);
         }catch (Exception e){
             logger.error("", e);
-            if(jedis!=null){
-                jedisPool.returnBrokenResource(jedis);
-                jedis = null;
-            }
         }finally {
-            if(jedis != null ) {
-                jedisPool.returnResource(jedis);
-            }
+            release(jedis);
         }
         return lists;
     }
@@ -600,14 +389,11 @@ public class RedisServiceImpl implements RedisService {
      * @param key
      */
     public List<String> getListSize(String key){
-        Jedis jedis = null;
+        jedis=this.getJedis();
+
         List<String> listString =  null;
-        boolean isBroken = false;
         long listSize = 0;
         try {
-            if (jedis==null){
-                jedis= jedisPool.getResource();
-            }
             listString = new ArrayList<String>();
             for (int i = 1; i < 15; i++) {
                 listSize = jedis.llen(String.valueOf(i));
@@ -615,15 +401,35 @@ public class RedisServiceImpl implements RedisService {
             }
         }catch (Exception e){
             logger.error("",e);
-            if(jedis!=null){
-                jedisPool.returnBrokenResource(jedis);
-                jedis = null;
-            }
         }finally {
-            if(jedis != null ) {
-                jedisPool.returnResource(jedis);
-            }
+            release(jedis);
         }
         return listString;
+    }
+
+
+    /**
+     * 获取一个jedis 客户端
+     *
+     * @return
+     */
+    private Jedis getJedis() {
+        if (jedis!=null&&jedis.isConnected())
+            return jedis;
+
+        if (jedisConnection == null) {
+            jedisConnection = jedisConnectionFactory.getConnection();
+        }
+        return jedisConnection.getNativeConnection();
+    }
+
+
+    /**
+     * 释放redis连接资源
+     * @param jedis
+     */
+    public void release(Jedis jedis) {
+        if (jedis!=null&&jedis.isConnected())
+            jedis.close();
     }
 }

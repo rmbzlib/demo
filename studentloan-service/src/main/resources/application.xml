@@ -13,6 +13,8 @@
 
 	<task:annotation-driven />
 
+    <import resource="classpath:spring-datasource.xml"/>
+
     <bean id="jedisPool" class="redis.clients.jedis.JedisPoolConfig" >
         <!--最大连接数-->
         <property name="maxTotal" value="1000" />
@@ -35,7 +37,11 @@
         <property name="timeout" value="2000"/>
         <!-- <property name="password" value="${redis.password}"/> -->
     </bean>
+    <!--缓存管理接口-->
+    <bean id="cacheManagerServiceImpl" class="com.qufenqi.common.service.CacheManagerServiceImpl">
 
-    <import resource="classpath:spring-datasource.xml"/>
+    </bean>
+
+
 
 </beans>

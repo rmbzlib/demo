@@ -3,6 +3,7 @@ package com.qufenqi.service;/**
  */
 
 import com.qufenqi.AbstractTestBase;
+import com.qufenqi.common.service.RedisService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,9 +19,19 @@ public class TestServiceTest extends AbstractTestBase{
     @Autowired
     private TestService testService;
 
+    @Autowired
+    private RedisService redisService;
+
     @Test
     public void testGet(){
         com.qufenqi.edu.dao.po.Test test=testService.get("1");
         System.out.println(test.getName());
     }
+
+    @Test
+    public void testRedis(){
+        System.out.println(redisService.checkExistServer());;
+    }
+
+
 }
