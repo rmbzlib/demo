@@ -25,7 +25,7 @@ public class TestServiceTest extends AbstractTestBase{
     @Test
     public void testGet(){
         com.qufenqi.edu.dao.po.Test test=testService.get("1");
-        System.out.println(test.getName());
+//        System.out.println(test.getName());
     }
 
     @Test
