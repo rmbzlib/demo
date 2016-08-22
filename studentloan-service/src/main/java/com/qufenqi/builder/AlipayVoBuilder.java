@@ -38,10 +38,15 @@ public class AlipayVoBuilder {
 
         //是否是学生
         if (alipayUserUserinfoShareResponse.getIsStudentCertified().equals("F")) {
-
             return ApiResult.build(EAlipay.NOT_STUDENT_CERTIFIED.getCode(), EAlipay.NOT_STUDENT_CERTIFIED.getMsg());
-
         } else {
+
+            List<StudentInfo> studentInfos = alipayCommerceEducateStudentinfoShareResponse.
+                    getStudentInfoShareResult().getStudentInfos();
+
+            if (studentInfos.size() == 0) {
+                return ApiResult.build(EAlipay.NOT_NULL.getCode(), EAlipay.NOT_NULL.getMsg());
+            }
 
             //获取user_id
             alipayStudentInfoVo.setUser_id(alipayUserUserinfoShareResponse.getUserId());
@@ -51,13 +56,6 @@ public class AlipayVoBuilder {
 
             //获取真实姓名
             alipayStudentInfoVo.setReal_name(alipayUserUserinfoShareResponse.getRealName());
-
-            List<StudentInfo> studentInfos = alipayCommerceEducateStudentinfoShareResponse.
-                    getStudentInfoShareResult().getStudentInfos();
-
-            if (studentInfos.size() == 0) {
-                return ApiResult.build(EAlipay.NOT_NULL.getCode(), EAlipay.NOT_NULL.getMsg());
-            }
 
             StudentInfo studentInfo = studentInfos.get(0);
 
