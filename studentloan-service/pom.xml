@@ -12,6 +12,8 @@
     <artifactId>studentloan-service</artifactId>
     <packaging>jar</packaging>
 
+
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.data</groupId>
@@ -88,11 +90,36 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
+        <!--httpClinet 性能 test -->
+
+        <!-- 1, https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
         <dependency>
-            <groupId>alipay-sdk-java</groupId>
-            <artifactId>alipay-sdk-java</artifactId>
-            <version>20160612120059</version>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.2</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.4.5</version>
+        </dependency>
+
+        <!-- 2, https://mvnrepository.com/artifact/commons-httpclient/commons-httpclient -->
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
+        </dependency>
+
+        <!-- 3, spring-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>4.1.6.RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+
 
     </dependencies>
 
