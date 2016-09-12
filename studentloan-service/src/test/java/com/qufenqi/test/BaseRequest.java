@@ -13,7 +13,8 @@ public class BaseRequest {
                 "    \"bizCode\" : \"QUFENQI\",\n" +
                 "    \"sign\" : \"9b1afae1b962b344d87a50f17cdca965\"\n" +
                 "}";
-
+        // wo shi wo
+        // 2
 
 
     }
