@@ -82,23 +82,5 @@
 
     <build>
         <finalName>front-web</finalName>
-        <plugins>
-            <!-- use spring boot plugin to build fat jar -->
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>1.3.5.RELEASE</version>
-                <configuration>
-                    <outputDirectory>../target</outputDirectory>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
     </build>
 </project>
