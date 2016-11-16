@@ -15,9 +15,12 @@
     <context:component-scan base-package="com.qufenqi" use-default-filters="false">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
+    <context:component-scan base-package="com.qufenqi.controller.TestMysqlInsert" use-default-filters="false">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
 
-    <!-- proxy-target-class="true"-->
-    <aop:aspectj-autoproxy/>
+
+    <aop:aspectj-autoproxy /><!-- proxy-target-class="true"-->
 
     <task:annotation-driven/>
 

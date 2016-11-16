@@ -2,13 +2,11 @@ package com.qufenqi.controller;/**
  * Created by zhangyang on 19/8/2016.
  */
 
-import com.qufenqi.controller.MyAnnotation.MonitorLog;
-import com.qufenqi.service.TestService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -19,16 +17,23 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 public class TestController implements Ordered{
-    @Autowired
-    private TestService testService;
+    public static Logger log = LoggerFactory.getLogger(TestController.class);
+    //@Autowired
+    //private TestService testService;
 
-    @MonitorLog
+    //@MonitorLog
+
+
+
     @ResponseBody
-    @RequestMapping(value = "/test",method = RequestMethod.GET)
-    public String getData(int i){
-
-        return "10JQKA";
+    @RequestMapping(value = "/index")
+    public String getData(){
+        return "success";
     }
+
+
+
+
 
     @Override
     public int getOrder() {

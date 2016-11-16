@@ -1,3 +1,4 @@
+/*
 package com.qufenqi.builder;
 
 
@@ -11,18 +12,22 @@ import com.qufenqi.vo.AlipayStudentInfoVo;
 import java.util.Calendar;
 import java.util.List;
 
+*/
 /**
  * Created by suzunshou on 16/8/20.
- */
+ *//*
+
 public class AlipayVoBuilder {
 
-    /**
+    */
+/**
      * 返回学生信息
      *
      * @param alipayUserUserinfoShareResponse
      * @param alipayCommerceEducateStudentinfoShareResponse
      * @return
-     */
+     *//*
+
     public static ApiResult buildAlipayStidentInfoVo(AlipayUserUserinfoShareResponse alipayUserUserinfoShareResponse, AlipayCommerceEducateStudentinfoShareResponse alipayCommerceEducateStudentinfoShareResponse) {
         AlipayStudentInfoVo alipayStudentInfoVo = new AlipayStudentInfoVo();
 
@@ -83,3 +88,4 @@ public class AlipayVoBuilder {
         }
     }
 }
+*/

@@ -12,8 +12,7 @@
        default-lazy-init="true">
 
     <context:component-scan base-package="com.qufenqi"/>
-
-    <aop:aspectj-autoproxy/>
+    <context:component-scan base-package="com.qufenqi.edu.dao"/>
 
     <bean id="propertyConfigurer"
           class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
